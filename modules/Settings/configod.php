@@ -23,7 +23,7 @@
 $coreBOSOnDemandActive = false;
 
 // Login Page
-$cbodLoginPage = 'ldsnoimage';
+$cbodLoginPage = 'newloginnedi';
 
 // maximum storage space permitted per install in Gb
 $cbodStorageSizeLimit = 5;
