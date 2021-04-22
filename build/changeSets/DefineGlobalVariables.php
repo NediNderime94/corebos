@@ -252,6 +252,7 @@ class DefineGlobalVariables extends cbupdaterWorker {
 				'Inventory_Tax_FillInMode',
 				'Inventory_Quantity_Precision',
 				'Inventory_Other_Modules',
+				'Inventory_DoNotUseLines',
 				'GContacts_Max_Results',
 
 				'CustomerPortal_PDF_Modules',
@@ -268,6 +269,7 @@ class DefineGlobalVariables extends cbupdaterWorker {
 				'ip_elastic_indexprefix',
 				'esusername',
 				'espassword',
+				'Security_ImageCheck',
 			);
 			$delete_these = array(
 				'preload_prototype',

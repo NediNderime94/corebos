@@ -626,7 +626,7 @@ class CRMEntity {
 		$insertion_mode = $this->mode;
 
 		//Checking if entry is already present so we have to update
-		if ($insertion_mode == 'edit') {
+		if ($insertion_mode == 'edit' && $table_name!='vtiger_invoice_recurring_info') {
 			$tablekey = $this->tab_name_index[$table_name];
 			// Make selection on the primary key of the module table to check.
 			$check_query = "select $tablekey from $table_name where $tablekey=?";
@@ -1131,7 +1131,7 @@ class CRMEntity {
 			$tabid = getTabid($module);
 
 			// Let us pick up all the fields first so that we can cache information
-			$sql1 = 'SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence FROM vtiger_field WHERE tabid=?';
+			$sql1 = 'SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence, defaultvalue FROM vtiger_field WHERE tabid=?';
 
 			// NOTE: Need to skip in-active fields which we will be done later.
 			$result1 = $adb->pquery($sql1, array($tabid));
@@ -1149,7 +1149,8 @@ class CRMEntity {
 						$resultrow['tablename'],
 						$resultrow['uitype'],
 						$resultrow['typeofdata'],
-						$resultrow['presence']
+						$resultrow['presence'],
+						$resultrow['defaultvalue']
 					);
 				}
 			}
@@ -1220,7 +1221,7 @@ class CRMEntity {
 			$tabid = getTabid($module);
 
 			// Let us pick up all the fields first so that we can cache information
-			$sql1 = 'SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence FROM vtiger_field WHERE tabid=?';
+			$sql1 = 'SELECT fieldname, fieldid, fieldlabel, columnname, tablename, uitype, typeofdata, presence, defaultvalue FROM vtiger_field WHERE tabid=?';
 
 			// NOTE: Need to skip in-active fields which we will be done later.
 			$result1 = $adb->pquery($sql1, array($tabid));
@@ -1238,7 +1239,8 @@ class CRMEntity {
 						$resultrow['tablename'],
 						$resultrow['uitype'],
 						$resultrow['typeofdata'],
-						$resultrow['presence']
+						$resultrow['presence'],
+						$resultrow['defaultvalue']
 					);
 				}
 			}
@@ -1374,6 +1376,28 @@ class CRMEntity {
 	 * @param $module_name -- module:: Type varchar
 	 */
 	public function save($module_name, $fileid = '') {
+		global $current_user;
+		if ($this->mode!='' && !empty($_REQUEST['FILTERFIELDSMAP'])) {
+			$bmapname = vtlib_purify($_REQUEST['FILTERFIELDSMAP']);
+			$cbMapid = GlobalVariable::getVariable('BusinessMapping_'.$bmapname, cbMap::getMapIdByName($bmapname));
+			if ($cbMapid) {
+				$cbMap = cbMap::getMapByID($cbMapid);
+				$mtype = $cbMap->column_fields['maptype'];
+				$mdmap = $cbMap->$mtype();
+				if (!empty($mdmap['editfieldnames'])) {
+					$stillindb = CRMEntity::getInstance($module_name);
+					$stillindb->retrieve_entity_info($this->id, $module_name, false, true);
+					$handler = vtws_getModuleHandlerFromName($module_name, $current_user);
+					$meta = $handler->getMeta();
+					$stillindb->column_fields = DataTransform::sanitizeRetrieveEntityInfo($stillindb->column_fields, $meta);
+					foreach ($stillindb->column_fields as $fname => $fvalue) {
+						if (!in_array($fname, $mdmap['editfieldnames'])) {
+							$this->column_fields[$fname] = $fvalue;
+						}
+					}
+				}
+			}
+		}
 		//Check if assigned_user_id is empty for assign the current user.
 		if (empty($this->column_fields['assigned_user_id'])) {
 			global $current_user;

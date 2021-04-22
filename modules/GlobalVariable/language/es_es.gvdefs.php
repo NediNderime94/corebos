@@ -734,6 +734,13 @@ $GlobalVariableDefinitons = array(
 	'values' => 'lista separada por comas de módulos con soporte de líneas de producto',
 	'definition' => 'Los módulos de inventario son especiales debido a sus líneas de productos, esta variable le permitirá agregar ese tipo de funcionalidad a tus módulos personalizados añadiendolo aquí.',
 ),
+'Inventory_DoNotUseLines' => array(
+	'status' => 'Implementada',
+	'valuetype' => 'Texto',
+	'category' => 'Aplicación',
+	'values' => 'lista separada por comas de módulos de inventario que no usarán líneas de productos',
+	'definition' => 'Los módulos enumerados en esta variable actuarán como módulos normales, sin mostrar las líneas de detalles del producto, solo los campos de encabezado del módulo.',
+),
 'Report_Send_Scheduled_ifEmpty' => array(
 	'status' => 'Implementada',
 	'valuetype' => 'Booleano',
@@ -1650,6 +1657,13 @@ $GlobalVariableDefinitons = array(
 	'category' => 'Aplicación',
 	'values' => '0 | 1',
 	'definition' => 'Permitir la edición del filtro "Todos". Por defecto es 1',
+),
+'Security_ImageCheck' => array(
+	'status' => 'Implementada',
+	'valuetype' => 'Cadena',
+	'category' => 'Aplicación',
+	'values' => 'strict | loose | clean',
+	'definition' => 'Esta variable decide si verificamos de manera estricta/vaga problemas de seguridad en un archivo de imagen o ignoramos la verificación y limpiamos la imagen.',
 ),
 );
 
